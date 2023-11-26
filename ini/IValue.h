@@ -19,6 +19,7 @@ typedef enum IValueKind
   List,
   Nil,
   Malformed,
+  Interpolation,
   Unknown,
 } IValueKind;
 
