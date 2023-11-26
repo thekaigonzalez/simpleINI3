@@ -231,12 +231,18 @@ ILexerTokenize (ILexer *lex, char *str)
           IBufferAppend (lex->buf, c);
         }
 
-      else if ((c == '\n') && lex->state == RightSide)
+      else if ((c == '\n' || c == ';') && lex->state == RightSide)
         {
+
           ITokensAppend (
               toks, ITokenNew (lex->blk, IBufferCopy (lex->buf), TKValue));
           IBufferClear (lex->buf);
-          ILexerSetState (lex, Start);
+          if (c == ';')
+            {
+              ILexerSetState (lex, Ignorant);
+            }
+          else
+            ILexerSetState (lex, Start);
         }
       else if (c == '\n' && lex->state == Ignorant)
         {
