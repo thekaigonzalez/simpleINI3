@@ -39,12 +39,60 @@ IEvaluateTokens (IObject *blk, ITokens *tokens, INIEnvironment *env)
         {
           if (tmpkey_value)
             {
-              IKeyValueSetValue (tmpkey_value,
-                                 IConvertToValue (blk, ITokenGetStr (tok)));
+              IValue *vconv = IConvertToValue (blk, ITokenGetStr (tok));
 
-              ISectionAppend (current, tmpkey_value);
+              if (IValueGetKind (vconv) == Interpolation)
+                {
+                  IBuffer *__tmp = IBufferNew (blk);
+                  char *str = IValueToString (vconv);
 
-              tmpkey_value = NULL;
+                  int ps = 0;
+
+                  for (int i = 0; i < strlen (str); ++i)
+                    {
+                      if (str[i] == '\\' && ps != 1)
+                        {
+                          ps = 1;
+                        }
+                      else if (str[i] == '(' && ps != 2)
+                        {
+                          ps = 2;
+                        }
+                      else if (str[i] == ')' && ps == 2)
+                        {
+                          ps = 0;
+                        }
+                      else
+                        {
+                          if (ps == 2)
+                            {
+                              IBufferAppend (__tmp, str[i]);
+                            }
+                        }
+                    }
+
+                  char *value_nam = IBufferCopy (__tmp);
+                  IValue *va
+                      = IKeyValueGetValue (ISectionGet (current, value_nam));
+
+                  printf ("value_nam: %d\n", IValueGetKind (va));
+
+                  printf ("vanam: %s\n", value_nam);
+
+                  IKeyValueSetValue (tmpkey_value, va);
+                  ISectionAppend (current, tmpkey_value);
+
+                  tmpkey_value = NULL;
+                }
+              else
+                {
+
+                  IKeyValueSetValue (tmpkey_value, vconv);
+
+                  ISectionAppend (current, tmpkey_value);
+
+                  tmpkey_value = NULL;
+                }
             }
         }
       else if (ITokenGetType (tok) == TKSectionName)
