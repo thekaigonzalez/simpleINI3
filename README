@@ -1,7 +1,0 @@
-simple ini 3
-
-the third iteration of my simple ini
-
-    this project follows the concept of memory pooling objects, essentially each
-    object contains a list of memory pointers to free, greatly reducing the
-    amount of memory that needs a free function call.
