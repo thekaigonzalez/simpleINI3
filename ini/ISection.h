@@ -22,6 +22,9 @@ void ISectionSetHeader (ISection *sec, char *hdr);
 // gets a sections header
 char *ISectionHeader (ISection *sec);
 
+// gets a key-value pair
+IKeyValue *ISectionGet (ISection *sec, char *key);
+
 // prints out a section
 void ISectionPrint (ISection *sec, char separator);
 
