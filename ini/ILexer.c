@@ -187,6 +187,10 @@ ILexerTokenize (ILexer *lex, char *str)
           IBufferClear (lex->buf);
           ILexerSetState (lex, RightSide);
         }
+      else if (c == ';' && lex->state == Start)
+        {
+          ILexerSetState (lex, Ignorant);
+        }
       else if (c == '[' && lex->state == Start)
         {
           ILexerSetState (lex, CollectingName);
@@ -233,6 +237,11 @@ ILexerTokenize (ILexer *lex, char *str)
               toks, ITokenNew (lex->blk, IBufferCopy (lex->buf), TKValue));
           IBufferClear (lex->buf);
           ILexerSetState (lex, Start);
+        }
+      else if (c == '\n' && lex->state == Ignorant)
+        {
+          ILexerSetState (lex, Start);
+          IBufferClear (lex->buf);
         }
       else
         {
