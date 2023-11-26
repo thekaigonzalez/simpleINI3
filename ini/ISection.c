@@ -98,6 +98,24 @@ ISectionHeader (ISection *sec)
   return sec->hdr;
 }
 
+IKeyValue *
+ISectionGet (ISection *sec, char *key)
+{
+  if (!sec)
+    {
+      return NULL;
+    }
+
+  for (int i = 0; i < sec->size; i++)
+    {
+      if (!strcmp (IKeyValueGetKey (sec->list[i]), key))
+        {
+          return sec->list[i];
+        }
+    }
+  return NULL;
+}
+
 void
 ISectionPrint (ISection *sec, char separator)
 {
