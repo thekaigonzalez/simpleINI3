@@ -1,4 +1,5 @@
 #include "IValue.h"
+#include "IBuffer.h"
 #include "IMemoryPool.h"
 
 #include <ctype.h>
@@ -49,12 +50,59 @@ IValueFromString (IObject *blk, char *str)
       v->kind = List;
       v->list = IValueListNew (blk);
 
+      int depth = 0;
+      IBuffer *buf = IBufferNew (blk);
+
+      for (int i = 1; i < strlen (str); ++i)
+        {
+          printf ("depth = %d\n", depth);
+          if (str[i] == '(')
+            {
+              ++depth;
+              IBufferAppend (buf, str[i]);
+            }
+          else if (str[i] == ')' && depth > 0)
+            {
+              --depth;
+              IBufferAppend (buf, str[i]);
+            }
+          else if (str[i] == ',' && depth == 0 && str[i - 1] != '\\')
+            {
+              IValueListAppend (v->list,
+                                IValueFromString (blk, IBufferCopy (buf)));
+              IBufferClear (buf);
+            }
+          else if (str[i] == ')' && depth == 0)
+            {
+              IValueListAppend (v->list,
+                                IValueFromString (blk, IBufferCopy (buf)));
+
+              IBufferClear (buf);
+            }
+          else
+            {
+              if (!isspace (str[i]))
+                {
+                  IBufferAppend (buf, str[i]);
+                }
+            }
+        }
+
+      return v;
+    }
+  else if (str[0] == '\\')
+    { // an interpolation \(previous_value)
+      v->kind = Interpolation;
+      v->string = str;
+
       return v;
     }
   else if (str[0] == '"')
     {
       v->kind = String;
       v->string = str;
+
+      return v;
     }
   else if (isdigit (str[0]))
     {
@@ -189,13 +237,17 @@ IValuePrintAsString (IValue *v)
       printf ("%s\n", v->id);
       break;
     case List:
-      printf ("List:\n");
+      printf ("<list>\n");
       for (int i = 0; i < v->list->size; ++i)
         {
           IValuePrintAsString (v->list->ptr[i]);
         }
       break;
+    case Interpolation:
+      printf ("<ref %s>\n", v->string);
+      break;
     default:
       printf ("Unknown value\n");
+      break;
     }
 }
