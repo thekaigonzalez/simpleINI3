@@ -151,13 +151,13 @@ test_lexer_evaluation (void)
 
   ILexer *l = ILexerNew (INIEnvObject (env));
 
-  ITokens *tks
-      = ILexerTokenize (l, "[section]\na = 1\nb = Hi\n[section-2]\nb = 2\n");
+  ITokens *tks = ILexerTokenize (l, "[section]\n; this\na = (1, 2, (3, 4))\nb "
+                                    "= \\(a)\n[section-2]\nb = 2\n");
 
   IPrintTokens (tks);
 
   IEvaluateTokens (INIEnvObject (env), tks, env);
-  
+
   INIEnvironmentPrint (env);
 
   IObjectFree (INIEnvObject (env));
