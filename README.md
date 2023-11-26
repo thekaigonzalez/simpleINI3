@@ -12,9 +12,10 @@ amount of memory that needs a free function call.
 
 ```ini
 ;; comments are allowed :)
-;; however, they are not allowed on the same line as the value
+;; comments are also allowed on the same line as a value, also called
+;; inline comments
 [section]
-a = 1
+a = 1 ; an inline comment
 
 ;; references are allowed
 ;; using \(<name>), you can reference another variable as long as it's in the same section
