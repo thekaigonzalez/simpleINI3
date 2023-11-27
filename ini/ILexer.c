@@ -259,6 +259,12 @@ ILexerTokenize (ILexer *lex, char *str)
             {
               ILexerAppend (lex, c);
             }
+          else if (!isalpha (c) && !isspace (c) && !isdigit (c)
+                   && lex->state == Start)
+            {
+              printf ("si3: bad character at %d: %c\n", i, c);
+              exit (1);
+            }
         }
     }
 
