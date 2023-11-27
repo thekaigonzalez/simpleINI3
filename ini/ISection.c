@@ -98,6 +98,22 @@ ISectionHeader (ISection *sec)
   return sec->hdr;
 }
 
+int
+ISectionSize (ISection *sec)
+{
+  return sec->size;
+}
+
+IKeyValue *
+ISectionGetAt (ISection *sec, int index)
+{
+  if (!sec || index < 0 || index >= sec->size)
+    {
+      return NULL;
+    }
+  return sec->list[index];
+}
+
 IKeyValue *
 ISectionGet (ISection *sec, char *key)
 {
