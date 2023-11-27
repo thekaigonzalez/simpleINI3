@@ -22,6 +22,7 @@ IEvaluateTokens (IObject *blk, ITokens *tokens, INIEnvironment *env)
   ISectionSetHeader (current, "_root");
 
   IKeyValue *tmpkey_value = NULL;
+  IKeyValue *last = NULL;
 
   int pc = 0;
 
@@ -52,11 +53,11 @@ IEvaluateTokens (IObject *blk, ITokens *tokens, INIEnvironment *env)
                     {
                       if (str[i] == '\\' && ps != 1)
                         {
-                          ps = 1;
+                          ps = 1; // first part
                         }
                       else if (str[i] == '(' && ps != 2)
                         {
-                          ps = 2;
+                          ps = 2; // second part
                         }
                       else if (str[i] == ')' && ps == 2)
                         {
@@ -64,6 +65,13 @@ IEvaluateTokens (IObject *blk, ITokens *tokens, INIEnvironment *env)
                         }
                       else
                         {
+                          if (!isalpha (str[i]) && str[i] != '$' && ps != 1)
+                            {
+                              printf ("si3: error in interpolation: only "
+                                      "[a-zA-Z] allowed here\n");
+                              printf ("\t%s\n", IBufferCopy (__tmp));
+                              exit (1);
+                            }
                           if (ps == 2)
                             {
                               IBufferAppend (__tmp, str[i]);
@@ -72,11 +80,31 @@ IEvaluateTokens (IObject *blk, ITokens *tokens, INIEnvironment *env)
                     }
 
                   char *value_nam = IBufferCopy (__tmp);
+
                   IValue *va
                       = IKeyValueGetValue (ISectionGet (current, value_nam));
 
+                  if (!va)
+                    {
+                      printf ("si3: error in interpolation: reference `%s' "
+                              "could not be located.\n",
+                              value_nam);
+                      printf ("note: variables you are allowed to reference "
+                              "in this section:\n");
+
+                      for (int i = 0; i < ISectionSize (current); ++i)
+                        {
+                          printf (
+                              "  \\(%s)\n",
+                              IKeyValueGetKey (ISectionGetAt (current, i)));
+                        }
+                      IObjectFree (blk);
+                      exit (1);
+                    }
+
                   IKeyValueSetValue (tmpkey_value, va);
                   ISectionAppend (current, tmpkey_value);
+                  last = tmpkey_value;
 
                   tmpkey_value = NULL;
                 }
@@ -86,6 +114,7 @@ IEvaluateTokens (IObject *blk, ITokens *tokens, INIEnvironment *env)
                   IKeyValueSetValue (tmpkey_value, vconv);
 
                   ISectionAppend (current, tmpkey_value);
+                  last = tmpkey_value;
 
                   tmpkey_value = NULL;
                 }
