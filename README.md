@@ -2,6 +2,20 @@
 
 the third iteration of my simple ini
 
+| Feature                                       | simpleINI2                      | simpleINI3                       |
+|-----------------------------------------------|-----------------------------------------------|------------------------------------------------|
+| **Sections**                                  | No support for sections.                     | Supports sections like `[Database]`, `[Settings]`. |
+| **Key-Value Pairs**                           | Basic key-value pairs, e.g., `a = 1`.        | Traditional key-value pairs in sections.      |
+| **Expression Support**                       | No support for expressions.                  | Supports expressions like `\(a)` in values.    |
+| **Inline Comments**                           | No support for inline comments.              | Supports inline comments with `;`.           |
+| **Multiple Sections**                        | No support for multiple sections.            | Supports multiple sections.                  |
+| **Automatic Type Checking**                   | No automatic type checking.                  | Basic type checking for standard INI types.  |
+| **Readability and Complexity**                | Simpler, more straightforward code.          | More generic, handles standard INI structure. |
+| **Use Case Focus**                            | Tailored for simpler INI structures.         | Generic parser for various INI file types.   |
+
+**Note:** The D code is more suitable for simple INI structures with basic key-value pairs and limited features. The C code provides a generic parser capable of handling standard INI files with sections, key-value pairs, and additional features like type checking.
+
+
 ## Memory pooling
 
 this project follows the concept of memory pooling objects, essentially each
