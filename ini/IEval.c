@@ -75,10 +75,6 @@ IEvaluateTokens (IObject *blk, ITokens *tokens, INIEnvironment *env)
                   IValue *va
                       = IKeyValueGetValue (ISectionGet (current, value_nam));
 
-                  printf ("value_nam: %d\n", IValueGetKind (va));
-
-                  printf ("vanam: %s\n", value_nam);
-
                   IKeyValueSetValue (tmpkey_value, va);
                   ISectionAppend (current, tmpkey_value);
 
