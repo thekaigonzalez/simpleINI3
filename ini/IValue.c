@@ -55,7 +55,6 @@ IValueFromString (IObject *blk, char *str)
 
       for (int i = 1; i < strlen (str); ++i)
         {
-          printf ("depth = %d\n", depth);
           if (str[i] == '(')
             {
               ++depth;
