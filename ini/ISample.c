@@ -153,7 +153,7 @@ test_lexer_evaluation (void)
 
   ITokens *tks
       = ILexerTokenize (l, "[section]\n; this\na = (1, 2) ; inline comment\nb "
-                           "= \\(a)\n[section-2]\nb = 2\n");
+                           "= \\($)\n[section-2]\nb = 2\n");
 
   IPrintTokens (tks);
 
