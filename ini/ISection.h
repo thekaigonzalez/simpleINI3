@@ -22,6 +22,12 @@ void ISectionSetHeader (ISection *sec, char *hdr);
 // gets a sections header
 char *ISectionHeader (ISection *sec);
 
+// gets the number of key-value pairs in a section
+int ISectionSize (ISection *sec);
+
+// gets the section key value at index (for indexing)
+IKeyValue *ISectionGetAt (ISection *sec, int index);
+
 // gets a key-value pair
 IKeyValue *ISectionGet (ISection *sec, char *key);
 
